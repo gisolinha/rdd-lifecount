@@ -1,6 +1,6 @@
 {
-    "name": "Commander Life Counter",
-    "short_name": "MTG Life",
+    "name": "República Democrática Dimir",
+    "short_name": "RDD",
     "description": "Contador de vida para Magic Commander",
     "start_url": "/",
     "display": "standalone",

@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const playersGrid = document.getElementById('playersGrid');
     const playerCountSelect = document.getElementById('playerCount');
-    const toggleModeBtn = document.getElementById('toggleMode');
+    const resetBtn = document.getElementById('resetBtn');
+    const damagePopup = document.getElementById('damagePopup');
+    const damageSourceSelect = document.getElementById('damageSource');
+    const damageAmountInput = document.getElementById('damageAmount');
+    const confirmDamageBtn = document.getElementById('confirmDamage');
     
     const colors = [
         '#FF5252', '#2196F3', '#4CAF50', '#FFC107',
@@ -10,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     
     let players = [];
-    let advancedMode = false;
+    let currentPlayerId = null;
 
     // Inicializa o jogo
     function initGame() {
@@ -51,25 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="life-btn minus" data-amount="5">-5</button>
             </div>
             <div class="commander-section">
-                <div class="add-damage">
-                    <select class="damage-source">
-                        ${players.filter(p => p.id !== index).map(p => 
-                            `<option value="${p.id}">${p.name}</option>`
-                        ).join('')}
-                    </select>
-                    <button class="add-damage-btn">+ Dano</button>
-                </div>
+                <button class="add-commander-btn">+ Dano de Comandante</button>
                 <div class="damage-list"></div>
             </div>
         `;
         
         playersGrid.appendChild(playerEl);
         
-        // Atualiza nome editável
+        // Nome editável
         const nameEl = playerEl.querySelector('.player-name');
         nameEl.addEventListener('blur', () => {
             player.name = nameEl.textContent;
-            updateDamageSources();
         });
         
         // Controles de vida
@@ -81,10 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        // Adiciona dano de comandante
-        playerEl.querySelector('.add-damage-btn').addEventListener('click', () => {
-            const sourceId = parseInt(playerEl.querySelector('.damage-source').value);
-            addCommanderDamage(index, sourceId, 1);
+        // Botão para adicionar dano
+        playerEl.querySelector('.add-commander-btn').addEventListener('click', () => {
+            currentPlayerId = index;
+            showDamagePopup(index);
         });
     }
     
@@ -104,6 +100,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
     
+    // Mostra popup de dano
+    function showDamagePopup(targetId) {
+        damageSourceSelect.innerHTML = '';
+        
+        players.forEach(player => {
+            if (player.id !== targetId) {
+                const option = document.createElement('option');
+                option.value = player.id;
+                option.textContent = player.name;
+                damageSourceSelect.appendChild(option);
+            }
+        });
+        
+        damagePopup.style.display = 'flex';
+    }
+    
     // Adiciona dano de comandante
     function addCommanderDamage(targetId, sourceId, amount) {
         const target = players[targetId];
@@ -121,11 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        updateCommanderDamageDisplay(targetId);
+        updateDamageList(targetId);
     }
     
-    // Atualiza exibição de dano
-    function updateCommanderDamageDisplay(playerIndex) {
+    // Atualiza lista de danos
+    function updateDamageList(playerIndex) {
         const player = players[playerIndex];
         const playerEl = playersGrid.children[playerIndex];
         const damageList = playerEl.querySelector('.damage-list');
@@ -133,33 +145,48 @@ document.addEventListener('DOMContentLoaded', () => {
         damageList.innerHTML = player.commanderDamage.map(damage => `
             <div class="damage-item">
                 <span>${damage.sourceName}</span>
-                <span>${damage.amount}</span>
+                <div class="damage-controls">
+                    <button class="damage-minus" data-source="${damage.sourceId}">-</button>
+                    <span>${damage.amount}</span>
+                    <button class="damage-plus" data-source="${damage.sourceId}">+</button>
+                </div>
             </div>
         `).join('');
-    }
-    
-    // Atualiza seletores de fonte de dano
-    function updateDamageSources() {
-        document.querySelectorAll('.damage-source').forEach(select => {
-            const playerId = parseInt(select.closest('.player').id.replace('player-', ''));
-            select.innerHTML = players
-                .filter(p => p.id !== playerId)
-                .map(p => `<option value="${p.id}">${p.name}</option>`)
-                .join('');
-        });
-    }
-    
-    // Alterna modo avançado
-    toggleModeBtn.addEventListener('click', () => {
-        advancedMode = !advancedMode;
-        toggleModeBtn.textContent = advancedMode ? 'Modo Simples' : 'Modo Avançado';
         
-        document.querySelectorAll('.commander-section').forEach(section => {
-            section.style.display = advancedMode ? 'block' : 'none';
+        // Eventos para +/- do dano
+        damageList.querySelectorAll('.damage-plus').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sourceId = parseInt(btn.getAttribute('data-source'));
+                addCommanderDamage(playerIndex, sourceId, 1);
+            });
         });
-    });
+        
+        damageList.querySelectorAll('.damage-minus').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sourceId = parseInt(btn.getAttribute('data-source'));
+                addCommanderDamage(playerIndex, sourceId, -1);
+            });
+        });
+    }
     
     // Event listeners
     playerCountSelect.addEventListener('change', initGame);
+    resetBtn.addEventListener('click', () => {
+        if (confirm('Tem certeza que quer resetar o jogo?')) {
+            initGame();
+        }
+    });
+    
+    confirmDamageBtn.addEventListener('click', () => {
+        const sourceId = parseInt(damageSourceSelect.value);
+        const amount = parseInt(damageAmountInput.value);
+        
+        if (sourceId !== null && amount > 0) {
+            addCommanderDamage(currentPlayerId, sourceId, amount);
+            damagePopup.style.display = 'none';
+        }
+    });
+    
+    // Inicia o jogo
     initGame();
 });
