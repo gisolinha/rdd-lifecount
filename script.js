@@ -1,11 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const playersGrid = document.getElementById('playersGrid');
     const playerCountSelect = document.getElementById('playerCount');
-    const resetBtn = document.getElementById('resetBtn');
+    const toggleModeBtn = document.getElementById('toggleMode');
     
-    const colors = ['#FF5252', '#2196F3', '#4CAF50', '#FFC107', '#9C27B0', '#607D8B'];
+    const colors = [
+        '#FF5252', '#2196F3', '#4CAF50', '#FFC107',
+        '#9C27B0', '#607D8B', '#E91E63', '#00BCD4',
+        '#8BC34A', '#FF9800', '#795548', '#9E9E9E'
+    ];
+    
     let players = [];
-    
+    let advancedMode = false;
+
     // Inicializa o jogo
     function initGame() {
         const playerCount = parseInt(playerCountSelect.value);
@@ -16,26 +22,27 @@ document.addEventListener('DOMContentLoaded', () => {
             createPlayer(i);
         }
     }
-    
+
     // Cria um jogador
     function createPlayer(index) {
         const player = {
             id: index,
             name: `Jogador ${index + 1}`,
-            color: colors[index % colors.length],
+            color: colors[index],
             life: 40,
-            commanderDamage: {}
+            commanderDamage: []
         };
         
         players.push(player);
         
-        // Cria elementos do DOM
         const playerEl = document.createElement('div');
         playerEl.className = 'player';
-        playerEl.style.borderTop = `5px solid ${player.color}`;
+        playerEl.style.borderTop = `4px solid ${player.color}`;
         
         playerEl.innerHTML = `
-            <div class="player-name">${player.name}</div>
+            <div class="player-header">
+                <div class="player-name" contenteditable="true">${player.name}</div>
+            </div>
             <div class="life-total">${player.life}</div>
             <div class="life-controls">
                 <button class="life-btn plus" data-amount="1">+1</button>
@@ -43,129 +50,116 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="life-btn minus" data-amount="1">-1</button>
                 <button class="life-btn minus" data-amount="5">-5</button>
             </div>
-            <div class="commander-damage">
-                <div class="damage-title">Dano de Comandante</div>
-                <div id="damage-${index}" class="damage-sources"></div>
+            <div class="commander-section">
+                <div class="add-damage">
+                    <select class="damage-source">
+                        ${players.filter(p => p.id !== index).map(p => 
+                            `<option value="${p.id}">${p.name}</option>`
+                        ).join('')}
+                    </select>
+                    <button class="add-damage-btn">+ Dano</button>
+                </div>
+                <div class="damage-list"></div>
             </div>
         `;
         
         playersGrid.appendChild(playerEl);
         
-        // Adiciona dano de comandante dos outros jogadores
-        const damageSourcesEl = playerEl.querySelector(`#damage-${index}`);
-        
-        players.forEach(otherPlayer => {
-            if (otherPlayer.id !== index) {
-                player.commanderDamage[otherPlayer.id] = 0;
-                
-                const damageSourceEl = document.createElement('div');
-                damageSourceEl.className = 'damage-source';
-                damageSourceEl.innerHTML = `
-                    <span class="damage-name">${otherPlayer.name}</span>
-                    <div class="damage-controls">
-                        <button class="damage-btn minus" data-player="${otherPlayer.id}">-</button>
-                        <span class="damage-value">0</span>
-                        <button class="damage-btn plus" data-player="${otherPlayer.id}">+</button>
-                    </div>
-                `;
-                
-                damageSourcesEl.appendChild(damageSourceEl);
-            }
+        // Atualiza nome editável
+        const nameEl = playerEl.querySelector('.player-name');
+        nameEl.addEventListener('blur', () => {
+            player.name = nameEl.textContent;
+            updateDamageSources();
         });
         
-        // Event listeners para os botões de vida
-        const plusBtns = playerEl.querySelectorAll('.life-btn.plus');
-        const minusBtns = playerEl.querySelectorAll('.life-btn.minus');
-        
-        plusBtns.forEach(btn => {
+        // Controles de vida
+        playerEl.querySelectorAll('.life-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const amount = parseInt(btn.getAttribute('data-amount'));
-                updateLife(index, amount);
+                const isPlus = btn.classList.contains('plus');
+                updateLife(index, isPlus ? amount : -amount);
             });
         });
         
-        minusBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const amount = parseInt(btn.getAttribute('data-amount'));
-                updateLife(index, -amount);
-            });
-        });
-        
-        // Event listeners para dano de comandante
-        const damagePlusBtns = playerEl.querySelectorAll('.damage-btn.plus');
-        const damageMinusBtns = playerEl.querySelectorAll('.damage-btn.minus');
-        
-        damagePlusBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const sourcePlayerId = parseInt(btn.getAttribute('data-player'));
-                updateCommanderDamage(index, sourcePlayerId, 1);
-            });
-        });
-        
-        damageMinusBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const sourcePlayerId = parseInt(btn.getAttribute('data-player'));
-                updateCommanderDamage(index, sourcePlayerId, -1);
-            });
+        // Adiciona dano de comandante
+        playerEl.querySelector('.add-damage-btn').addEventListener('click', () => {
+            const sourceId = parseInt(playerEl.querySelector('.damage-source').value);
+            addCommanderDamage(index, sourceId, 1);
         });
     }
     
-    // Atualiza a vida do jogador
+    // Atualiza vida
     function updateLife(playerIndex, change) {
         const player = players[playerIndex];
-        const newLife = player.life + change;
+        player.life = Math.max(0, player.life + change);
         
-        if (newLife >= 0) {
-            player.life = newLife;
-            updatePlayerDisplay(playerIndex);
-        }
+        const playerEl = playersGrid.children[playerIndex];
+        const lifeEl = playerEl.querySelector('.life-total');
+        
+        lifeEl.textContent = player.life;
+        lifeEl.style.color = change > 0 ? 'var(--life-plus)' : 'var(--life-minus)';
+        
+        setTimeout(() => {
+            lifeEl.style.color = 'var(--accent)';
+        }, 300);
     }
     
-    // Atualiza dano de comandante
-    function updateCommanderDamage(playerIndex, sourcePlayerId, change) {
-        const player = players[playerIndex];
-        const newDamage = player.commanderDamage[sourcePlayerId] + change;
+    // Adiciona dano de comandante
+    function addCommanderDamage(targetId, sourceId, amount) {
+        const target = players[targetId];
+        const source = players.find(p => p.id === sourceId);
         
-        if (newDamage >= 0) {
-            player.commanderDamage[sourcePlayerId] = newDamage;
-            updatePlayerDisplay(playerIndex);
+        const existingDamage = target.commanderDamage.find(d => d.sourceId === sourceId);
+        
+        if (existingDamage) {
+            existingDamage.amount += amount;
+        } else {
+            target.commanderDamage.push({
+                sourceId,
+                sourceName: source.name,
+                amount
+            });
         }
+        
+        updateCommanderDamageDisplay(targetId);
     }
     
-    // Atualiza a exibição do jogador
-    function updatePlayerDisplay(playerIndex) {
+    // Atualiza exibição de dano
+    function updateCommanderDamageDisplay(playerIndex) {
         const player = players[playerIndex];
         const playerEl = playersGrid.children[playerIndex];
+        const damageList = playerEl.querySelector('.damage-list');
         
-        // Atualiza vida
-        playerEl.querySelector('.life-total').textContent = player.life;
-        
-        // Atualiza dano de comandante
-        for (const [sourceId, damage] of Object.entries(player.commanderDamage)) {
-            const sourceEl = playerEl.querySelector(`.damage-btn[data-player="${sourceId}"]`).parentNode;
-            sourceEl.querySelector('.damage-value').textContent = damage;
-        }
+        damageList.innerHTML = player.commanderDamage.map(damage => `
+            <div class="damage-item">
+                <span>${damage.sourceName}</span>
+                <span>${damage.amount}</span>
+            </div>
+        `).join('');
     }
+    
+    // Atualiza seletores de fonte de dano
+    function updateDamageSources() {
+        document.querySelectorAll('.damage-source').forEach(select => {
+            const playerId = parseInt(select.closest('.player').id.replace('player-', ''));
+            select.innerHTML = players
+                .filter(p => p.id !== playerId)
+                .map(p => `<option value="${p.id}">${p.name}</option>`)
+                .join('');
+        });
+    }
+    
+    // Alterna modo avançado
+    toggleModeBtn.addEventListener('click', () => {
+        advancedMode = !advancedMode;
+        toggleModeBtn.textContent = advancedMode ? 'Modo Simples' : 'Modo Avançado';
+        
+        document.querySelectorAll('.commander-section').forEach(section => {
+            section.style.display = advancedMode ? 'block' : 'none';
+        });
+    });
     
     // Event listeners
     playerCountSelect.addEventListener('change', initGame);
-    resetBtn.addEventListener('click', () => {
-        if (confirm('Tem certeza que quer resetar o jogo?')) {
-            initGame();
-        }
-    });
-    
-    // Inicia o jogo
     initGame();
-    
-    // Service Worker para PWA
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').then(registration => {
-                console.log('ServiceWorker registrado com sucesso');
-            }).catch(err => {
-                console.log('ServiceWorker falhou: ', err);
-            });
-        });
-    }
 });

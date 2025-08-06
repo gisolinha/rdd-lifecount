@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commander Life Counter</title>
-    <meta name="theme-color" content="#121212">
-    <link rel="manifest" href="manifest.json">
+    <title>Magic Commander Life</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div class="app">
+        <!-- Cabeçalho -->
         <header>
-            <h1>Commander Life Counter</h1>
+            <h1>Commander Life</h1>
             <div class="controls">
                 <select id="playerCount">
                     <option value="2">2 Jogadores</option>
-                    <option value="3">3 Jogadores</option>
                     <option value="4" selected>4 Jogadores</option>
+                    <option value="6">6 Jogadores</option>
+                    <option value="12">12 Jogadores</option>
                 </select>
-                <button id="resetBtn">Resetar</button>
+                <button id="toggleMode">Modo Avançado</button>
             </div>
         </header>
 
-        <div id="playersGrid" class="players-grid">
-            <!-- Jogadores serão adicionados aqui -->
-        </div>
+        <!-- Grid de Jogadores -->
+        <div id="playersGrid" class="players-grid"></div>
     </div>
 
     <script src="script.js"></script>
