@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commander Life Counter</title>
+    <meta name="theme-color" content="#121212">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1>Commander Life Counter</h1>
+            <div class="controls">
+                <select id="playerCount">
+                    <option value="2">2 Jogadores</option>
+                    <option value="3">3 Jogadores</option>
+                    <option value="4" selected>4 Jogadores</option>
+                </select>
+                <button id="resetBtn">Resetar</button>
+            </div>
+        </header>
+
+        <div id="playersGrid" class="players-grid">
+            <!-- Jogadores serão adicionados aqui -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
