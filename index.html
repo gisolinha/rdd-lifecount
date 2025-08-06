@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RDD</title>
+    <title>Magic Commander Life</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div class="app">
         <header>
-            <h1>República Democrática Dimir</h1>
+            <h1>Commander Life</h1>
             <div class="controls">
-                <select id="playerCount">
-                    <option value="2">2 Jogadores</option>
-                    <option value="4" selected>4 Jogadores</option>
-                    <option value="6">6 Jogadores</option>
-                    <option value="12">12 Jogadores</option>
-                </select>
+                <input type="number" id="playerCount" min="2" max="12" value="4" placeholder="Nº de Jogadores">
+                <button id="generatePlayers">Gerar Jogadores</button>
                 <button id="resetBtn">Resetar</button>
             </div>
         </header>
@@ -25,15 +20,17 @@
         <div id="playersGrid" class="players-grid"></div>
     </div>
 
-    <!-- Popup de Dano de Comandante (oculto inicialmente) -->
-    <div id="damagePopup" class="damage-popup" style="display: none;">
+    <!-- Popup de Dano de Comandante -->
+    <div id="damagePopup" class="damage-popup">
         <div class="popup-content">
-            <h3>Adicionar Dano de Comandante</h3>
-            <select id="damageSource" class="damage-source">
-                <!-- Opções serão preenchidas via JavaScript -->
+            <h3>Adicionar Dano</h3>
+            <p>Quem causou o dano?</p>
+            <select id="damageSource">
+                <!-- Preenchido via JavaScript -->
             </select>
-            <input type="number" id="damageAmount" class="damage-amount" min="1" value="1">
-            <button id="confirmDamage">OK</button>
+            <p>Quantidade:</p>
+            <input type="number" id="damageAmount" min="1" value="1">
+            <button id="confirmDamage">Adicionar</button>
         </div>
     </div>
 

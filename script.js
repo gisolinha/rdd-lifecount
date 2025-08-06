@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const playersGrid = document.getElementById('playersGrid');
-    const playerCountSelect = document.getElementById('playerCount');
+    const playerCountInput = document.getElementById('playerCount');
+    const generatePlayersBtn = document.getElementById('generatePlayers');
     const resetBtn = document.getElementById('resetBtn');
     const damagePopup = document.getElementById('damagePopup');
     const damageSourceSelect = document.getElementById('damageSource');
@@ -18,7 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicializa o jogo
     function initGame() {
-        const playerCount = parseInt(playerCountSelect.value);
+        const playerCount = parseInt(playerCountInput.value);
+        if (playerCount < 2 || playerCount > 12) {
+            alert("Número de jogadores deve ser entre 2 e 12");
+            return;
+        }
+        
         playersGrid.innerHTML = '';
         players = [];
         
@@ -55,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="life-btn minus" data-amount="5">-5</button>
             </div>
             <div class="commander-section">
-                <button class="add-commander-btn">+ Dano de Comandante</button>
+                <button class="commander-btn">Dano de Comandante</button>
                 <div class="damage-list"></div>
             </div>
         `;
@@ -78,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         // Botão para adicionar dano
-        playerEl.querySelector('.add-commander-btn').addEventListener('click', () => {
+        playerEl.querySelector('.commander-btn').addEventListener('click', () => {
             currentPlayerId = index;
             showDamagePopup(index);
         });
@@ -170,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Event listeners
-    playerCountSelect.addEventListener('change', initGame);
+    generatePlayersBtn.addEventListener('click', initGame);
     resetBtn.addEventListener('click', () => {
         if (confirm('Tem certeza que quer resetar o jogo?')) {
             initGame();
@@ -187,6 +193,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Inicia o jogo
+    // Fechar popup se clicar fora
+    damagePopup.addEventListener('click', (e) => {
+        if (e.target === damagePopup) {
+            damagePopup.style.display = 'none';
+        }
+    });
+    
+    // Inicia o jogo com 4 jogadores por padrão
     initGame();
 });

@@ -33,19 +33,24 @@ h1 {
     gap: 10px;
     justify-content: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
-select, button {
+input, button {
     padding: 8px 15px;
     border-radius: 5px;
     border: none;
-    background-color: var(--secondary);
+    font-size: 16px;
+}
+
+button {
+    background-color: var(--accent);
     color: white;
-    font-weight: bold;
+    cursor: pointer;
 }
 
 #resetBtn {
-    background-color: var(--accent);
+    background-color: #f44336;
 }
 
 .players-grid {
@@ -117,7 +122,7 @@ select, button {
     border-top: 1px solid #444;
 }
 
-.add-commander-btn {
+.commander-btn {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
@@ -153,6 +158,7 @@ select, button {
     border: none;
     font-weight: bold;
     cursor: pointer;
+    background-color: #555;
 }
 
 /* Popup de Dano */
@@ -163,7 +169,7 @@ select, button {
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.7);
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -197,6 +203,7 @@ select, button {
     color: white;
     font-weight: bold;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 @media (max-width: 600px) {
