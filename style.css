@@ -6,7 +6,6 @@
     --life-minus: #f44336;
 }
 
-/* Reset e base */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -17,149 +16,144 @@ body {
     font-family: 'Arial', sans-serif;
     background-color: var(--primary);
     color: white;
-    overflow: hidden;
-    touch-action: manipulation;
+    padding: 10px;
     height: 100vh;
 }
 
-/* Estrutura principal */
 .app {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-}
-
-/* Controles centrais */
-.center-controls {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    text-align: center;
-    width: 80%;
-}
-
-#firstPlayerBtn {
-    background: #9C27B0;
-    color: white;
-    border: none;
-    padding: 15px 25px;
-    font-size: 1.2rem;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    margin-bottom: 10px;
-}
-
-#firstPlayerDisplay {
-    color: gold;
-    font-weight: bold;
-    font-size: 1.3rem;
-    min-height: 1.5em;
-}
-
-/* Container de jogadores */
-.players-container {
-    position: relative;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
     height: 100%;
 }
 
-/* Estilo dos jogadores */
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+input, button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+}
+
+button {
+    background-color: var(--accent);
+    color: white;
+    cursor: pointer;
+}
+
+#firstPlayerBtn {
+    background-color: #9c27b0;
+}
+
+.players-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    flex: 1;
+    overflow-y: auto;
+}
+
 .player {
-    position: absolute;
-    width: 25vmin;
-    height: 25vmin;
-    border-radius: 50%;
-    background: var(--secondary);
+    background-color: var(--secondary);
+    border-radius: 10px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    transition: all 0.3s;
-    border: 3px solid transparent;
+    border-top: 5px solid var(--accent);
 }
 
-.player.highlight {
-    border-color: gold;
-    animation: pulse 1.5s infinite;
-}
-
-/* Posicionamento circular dinâmico */
-.player[data-position="0"] { top: 10%; left: 50%; transform: translateX(-50%); }
-.player[data-position="1"] { top: 75%; left: 15%; }
-.player[data-position="2"] { top: 75%; right: 15%; }
-.player[data-position="3"] { top: 40%; left: 5%; }
-.player[data-position="4"] { top: 40%; right: 5%; }
-.player[data-position="5"] { top: 20%; left: 20%; }
-.player[data-position="6"] { top: 20%; right: 20%; }
-
-/* Ajustes para 2 jogadores */
-.player[data-position="0"][data-total="2"] { top: 20%; left: 50%; }
-.player[data-position="1"][data-total="2"] { top: 70%; left: 50%; }
-
-/* Elementos internos */
 .player-name {
-    font-size: 1.1rem;
-    margin-bottom: 5px;
-    text-align: center;
-    max-width: 90%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
     cursor: pointer;
-    padding: 2px 5px;
+    padding: 5px;
     border-radius: 3px;
 }
 
 .player-name:focus {
-    outline: none;
-    background: #333;
+    outline: 1px solid var(--accent);
+    background-color: #333;
 }
 
 .life-total {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 5px 0;
+    font-size: 3rem;
+    margin: 10px 0;
     color: var(--accent);
 }
 
 .life-controls {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
-    width: 80%;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
 }
 
 .life-btn {
-    padding: 8px;
+    padding: 10px;
+    font-size: 1.1rem;
     border: none;
     border-radius: 5px;
     font-weight: bold;
-    cursor: pointer;
 }
 
 .life-btn.plus {
-    background: var(--life-plus);
+    background-color: var(--life-plus);
 }
 
 .life-btn.minus {
-    background: var(--life-minus);
+    background-color: var(--life-minus);
+}
+
+.commander-section {
+    margin-top: 15px;
+    width: 100%;
 }
 
 .commander-btn {
-    margin-top: 8px;
-    padding: 5px 10px;
-    background: #333;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: #333;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-/* Popup de dano */
+.damage-list {
+    margin-top: 10px;
+}
+
+.damage-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #444;
+}
+
+.damage-controls {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.damage-controls button {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    padding: 0;
+    font-size: 0.9rem;
+}
+
 .damage-popup {
     position: fixed;
     top: 0;
@@ -179,13 +173,12 @@ body {
     border-radius: 10px;
     width: 90%;
     max-width: 300px;
-    text-align: center;
 }
 
 .popup-content select, 
 .popup-content input {
     width: 100%;
-    padding: 10px;
+    padding: 8px;
     margin: 10px 0;
     background: #333;
     color: white;
@@ -196,33 +189,21 @@ body {
 .popup-content button {
     width: 100%;
     padding: 10px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
     margin-top: 10px;
 }
 
-/* Animações */
-@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 10px gold; }
-    50% { transform: scale(1.05); box-shadow: 0 0 20px gold; }
-    100% { transform: scale(1); box-shadow: 0 0 10px gold; }
+.highlight {
+    animation: highlight 1s infinite;
 }
 
-/* Responsividade */
+@keyframes highlight {
+    0% { box-shadow: 0 0 5px gold; }
+    50% { box-shadow: 0 0 20px gold; }
+    100% { box-shadow: 0 0 5px gold; }
+}
+
 @media (max-width: 600px) {
-    .player {
-        width: 22vmin;
-        height: 22vmin;
-    }
-    .life-total {
-        font-size: 2rem;
-    }
-    #firstPlayerBtn {
-        padding: 12px 20px;
-        font-size: 1rem;
+    .players-container {
+        grid-template-columns: 1fr;
     }
 }
