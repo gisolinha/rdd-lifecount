@@ -16,144 +16,130 @@ body {
     font-family: 'Arial', sans-serif;
     background-color: var(--primary);
     color: white;
-    padding: 10px;
+    overflow: hidden;
     height: 100vh;
 }
 
 .app {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
 }
 
+/* Controles */
 .controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
+    z-index: 10;
 }
 
-input, button {
+.controls input, .controls button {
     padding: 10px 15px;
-    border-radius: 5px;
+    border-radius: 25px;
     border: none;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
-button {
-    background-color: var(--accent);
+#generateBtn {
+    background: var(--accent);
     color: white;
-    cursor: pointer;
 }
 
 #firstPlayerBtn {
-    background-color: #9c27b0;
+    background: #9c27b0;
+    color: white;
 }
 
+/* Container de jogadores */
 .players-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    flex: 1;
-    overflow-y: auto;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
+/* Estilo dos jogadores */
 .player {
-    background-color: var(--secondary);
+    position: absolute;
+    width: 120px;
+    height: 160px;
+    background: var(--secondary);
     border-radius: 10px;
-    padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
     border-top: 5px solid var(--accent);
+    transition: all 0.3s;
 }
 
+.player.highlight {
+    animation: pulse 1.5s infinite;
+}
+
+/* Posicionamento circular (4 jogadores) */
+.player[data-position="0"] { top: 10%; left: 50%; transform: translateX(-50%); }
+.player[data-position="1"] { top: 50%; right: 5%; transform: translateY(-50%); }
+.player[data-position="2"] { bottom: 10%; left: 50%; transform: translateX(-50%); }
+.player[data-position="3"] { top: 50%; left: 5%; transform: translateY(-50%); }
+
+/* Elementos dos jogadores */
 .player-name {
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    margin-bottom: 5px;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 3px;
-}
-
-.player-name:focus {
-    outline: 1px solid var(--accent);
-    background-color: #333;
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .life-total {
-    font-size: 3rem;
-    margin: 10px 0;
+    font-size: 2.5rem;
+    margin: 5px 0;
     color: var(--accent);
 }
 
 .life-controls {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 5px;
     width: 100%;
 }
 
 .life-btn {
-    padding: 10px;
-    font-size: 1.1rem;
+    padding: 5px;
     border: none;
     border-radius: 5px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .life-btn.plus {
-    background-color: var(--life-plus);
+    background: var(--life-plus);
 }
 
 .life-btn.minus {
-    background-color: var(--life-minus);
-}
-
-.commander-section {
-    margin-top: 15px;
-    width: 100%;
+    background: var(--life-minus);
 }
 
 .commander-btn {
+    margin-top: 8px;
+    padding: 5px;
     width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    background-color: #333;
+    background: #333;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.damage-list {
-    margin-top: 10px;
-}
-
-.damage-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-    border-bottom: 1px solid #444;
-}
-
-.damage-controls {
-    display: flex;
-    gap: 5px;
-    align-items: center;
-}
-
-.damage-controls button {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    padding: 0;
-    font-size: 0.9rem;
-}
-
+/* Popup de dano */
 .damage-popup {
     position: fixed;
     top: 0;
@@ -171,15 +157,16 @@ button {
     background: var(--secondary);
     padding: 20px;
     border-radius: 10px;
-    width: 90%;
+    width: 80%;
     max-width: 300px;
+    text-align: center;
 }
 
 .popup-content select, 
 .popup-content input {
     width: 100%;
     padding: 8px;
-    margin: 10px 0;
+    margin: 8px 0;
     background: #333;
     color: white;
     border: none;
@@ -189,21 +176,28 @@ button {
 .popup-content button {
     width: 100%;
     padding: 10px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 5px;
     margin-top: 10px;
+    cursor: pointer;
 }
 
-.highlight {
-    animation: highlight 1s infinite;
+/* Animações */
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px gold; transform: scale(1); }
+    50% { box-shadow: 0 0 20px gold; transform: scale(1.05); }
+    100% { box-shadow: 0 0 5px gold; transform: scale(1); }
 }
 
-@keyframes highlight {
-    0% { box-shadow: 0 0 5px gold; }
-    50% { box-shadow: 0 0 20px gold; }
-    100% { box-shadow: 0 0 5px gold; }
-}
-
+/* Responsividade */
 @media (max-width: 600px) {
-    .players-container {
-        grid-template-columns: 1fr;
+    .player {
+        width: 100px;
+        height: 140px;
+    }
+    .life-total {
+        font-size: 2rem;
     }
 }
