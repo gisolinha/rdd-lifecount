@@ -188,6 +188,31 @@ button {
     100% { box-shadow: 0 0 5px gold; }
 }
 
+.damage-controls {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.damage-controls button {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: none;
+    background: #444;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.damage-value {
+    min-width: 20px;
+    text-align: center;
+}
+
 @media (max-width: 600px) {
     .players-container {
         grid-template-columns: 1fr;

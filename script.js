@@ -129,24 +129,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Adiciona dano de comandante
-    function addCommanderDamage(targetId, sourceId, amount) {
-        const target = players[targetId];
-        const source = players.find(p => p.id === sourceId);
-        
-        const existingDamage = target.commanderDamage.find(d => d.sourceId === sourceId);
-        
-        if (existingDamage) {
-            existingDamage.amount += amount;
-        } else {
-            target.commanderDamage.push({
-                sourceId,
-                sourceName: source.name,
-                amount
-            });
-        }
-        
-        updateDamageList(targetId);
+   function addCommanderDamage(targetId, sourceId, amount) {
+    const target = players[targetId];
+    const source = players.find(p => p.id === sourceId);
+    
+    const existingDamage = target.commanderDamage.find(d => d.sourceId === sourceId);
+    
+    if (existingDamage) {
+        existingDamage.amount += amount;
+    } else {
+        target.commanderDamage.push({
+            sourceId,
+            sourceName: source.name,
+            amount
+        });
     }
+    
+    updateDamageList(targetId);
+}
     
     // Atualiza lista de danos
     function updateDamageList(playerIndex) {
@@ -210,6 +210,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+function updateDamageList(playerIndex) {
+    const player = players[playerIndex];
+    const playerEl = playersContainer.children[playerIndex];
+    const damageList = playerEl.querySelector('.damage-list');
+    
+    damageList.innerHTML = player.commanderDamage.map(damage => `
+        <div class="damage-item" data-source="${damage.sourceId}">
+            <span>${damage.sourceName}</span>
+            <div class="damage-controls">
+                <button class="damage-minus">-</button>
+                <span class="damage-value">${damage.amount}</span>
+                <button class="damage-plus">+</button>
+            </div>
+        </div>
+    `).join('');
+
+    // Adiciona eventos aos botões de controle de dano
+    damageList.querySelectorAll('.damage-plus').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const sourceId = parseInt(e.target.closest('.damage-item').getAttribute('data-source'));
+            adjustCommanderDamage(playerIndex, sourceId, 1);
+        });
+    });
+
+    damageList.querySelectorAll('.damage-minus').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const sourceId = parseInt(e.target.closest('.damage-item').getAttribute('data-source'));
+            adjustCommanderDamage(playerIndex, sourceId, -1);
+        });
+    });
+}
+
+// Nova função para ajustar dano existente
+function adjustCommanderDamage(targetId, sourceId, change) {
+    const target = players[targetId];
+    const damage = target.commanderDamage.find(d => d.sourceId === sourceId);
+    
+    if (damage) {
+        damage.amount = Math.max(0, damage.amount + change);
+        updateDamageList(targetId);
+    }
+}
     // Inicia o jogo com 4 jogadores por padrão
     initGame();
 });
