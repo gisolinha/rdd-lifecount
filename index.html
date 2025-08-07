@@ -3,34 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magic Commander Life</title>
+    <title>Magic Life Circular</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app">
-        <header>
-            <h1>Commander Life</h1>
-            <div class="controls">
-                <input type="number" id="playerCount" min="2" max="12" value="4" placeholder="Nº de Jogadores">
-                <button id="generatePlayers">Gerar Jogadores</button>
-                <button id="resetBtn">Resetar</button>
+        <!-- Controles centrais -->
+        <div class="center-controls">
+            <button id="firstPlayerBtn">🎲 Sortear Iniciante</button>
+            <div id="firstPlayerDisplay"></div>
+        </div>
+
+        <!-- Container de jogadores (posicionamento circular) -->
+        <div id="playersContainer" class="players-container"></div>
+
+        <!-- Popup de dano -->
+        <div id="damagePopup" class="damage-popup">
+            <div class="popup-content">
+                <h3>Adicionar Dano</h3>
+                <select id="damageSource">
+                    <!-- Preenchido via JavaScript -->
+                </select>
+                <input type="number" id="damageAmount" min="1" value="1">
+                <button id="confirmDamage">✔ Adicionar</button>
             </div>
-        </header>
-
-        <div id="playersGrid" class="players-grid"></div>
-    </div>
-
-    <!-- Popup de Dano de Comandante -->
-    <div id="damagePopup" class="damage-popup">
-        <div class="popup-content">
-            <h3>Adicionar Dano</h3>
-            <p>Quem causou o dano?</p>
-            <select id="damageSource">
-                <!-- Preenchido via JavaScript -->
-            </select>
-            <p>Quantidade:</p>
-            <input type="number" id="damageAmount" min="1" value="1">
-            <button id="confirmDamage">Adicionar</button>
         </div>
     </div>
 
