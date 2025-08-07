@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magic Commander - 12 Jogadores</title>
+    <title>Magic Commander</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app">
-        <!-- Controles -->
         <div class="controls">
-            <input type="number" id="playerCount" min="2" max="12" value="4">
+            <input type="number" id="playerCount" min="2" max="8" value="4">
             <button id="generateBtn">Gerar Jogadores</button>
-            <button id="firstPlayerBtn">🎲 Sortear Iniciante</button>
+            <button id="firstPlayerBtn">Sortear Iniciante</button>
         </div>
 
-        <!-- Container de jogadores -->
         <div id="playersContainer" class="players-container"></div>
 
-        <!-- Popup de dano -->
-        <div id="damagePopup" class="damage-popup">
+        <div id="damagePopup" class="popup">
             <div class="popup-content">
                 <h3>Adicionar Dano</h3>
                 <select id="damageSource"></select>

@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const colors = [
         '#FF5252', '#2196F3', '#4CAF50', '#FFC107',
-        '#9C27B0', '#607D8B', '#E91E63', '#00BCD4',
-        '#8BC34A', '#FF9800', '#795548', '#9E9E9E'
+        '#9C27B0', '#607D8B', '#E91E63', '#00BCD4'
     ];
 
     let players = [];
@@ -20,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializa o jogo
     function initGame() {
         const playerCount = parseInt(playerCountInput.value);
-        if (playerCount < 2 || playerCount > 12) {
-            alert("Número de jogadores deve ser entre 2 e 12");
+        if (playerCount < 2 || playerCount > 8) {
+            alert("Número de jogadores deve ser entre 2 e 8");
             return;
         }
         
@@ -31,8 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < playerCount; i++) {
             createPlayer(i);
         }
-        
-        positionPlayers();
     }
 
     // Cria um jogador
@@ -50,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const playerEl = document.createElement('div');
         playerEl.className = 'player';
         playerEl.style.borderColor = player.color;
-        playerEl.setAttribute('data-position', index);
+        
         playerEl.innerHTML = `
             <div class="player-name" contenteditable="true">${player.name}</div>
             <div class="life-total">${player.life}</div>
@@ -60,8 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="life-btn minus" data-amount="1">-1</button>
                 <button class="life-btn minus" data-amount="5">-5</button>
             </div>
-            <button class="commander-btn">Dano</button>
-            <div class="damage-list"></div>
+            <div class="commander-section">
+                <button class="commander-btn">Dano de Comandante</button>
+                <div class="damage-list"></div>
+            </div>
         `;
         
         playersContainer.appendChild(playerEl);
@@ -92,20 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Botão de dano de comandante
         playerEl.querySelector('.commander-btn').addEventListener('click', () => {
             currentPlayerId = index;
-            showDamagePopup(index);
+            showDamagePopup();
         });
     }
-
-    // Posiciona os jogadores
-    function positionPlayers() {
-        const playerElements = document.querySelectorAll('.player');
-        const totalPlayers = playerElements.length;
-        
-        playerElements.forEach((playerEl, index) => {
-            playerEl.setAttribute('data-total', totalPlayers);
-        });
-    }
-
+    
     // Atualiza vida
     function updateLife(playerIndex, change) {
         const player = players[playerIndex];
@@ -115,21 +104,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const lifeEl = playerEl.querySelector('.life-total');
         
         lifeEl.textContent = player.life;
-        lifeEl.style.transform = 'scale(1.2)';
         lifeEl.style.color = change > 0 ? 'var(--life-plus)' : 'var(--life-minus)';
         
         setTimeout(() => {
-            lifeEl.style.transform = 'scale(1)';
             lifeEl.style.color = 'var(--accent)';
         }, 300);
     }
-
+    
     // Mostra popup de dano
-    function showDamagePopup(targetId) {
+    function showDamagePopup() {
         damageSourceSelect.innerHTML = '';
         
         players.forEach(player => {
-            if (player.id !== targetId) {
+            if (player.id !== currentPlayerId) {
                 const option = document.createElement('option');
                 option.value = player.id;
                 option.textContent = player.name;
@@ -140,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         damageAmountInput.value = 1;
         damagePopup.style.display = 'flex';
     }
-
+    
     // Adiciona dano de comandante
     function addCommanderDamage(targetId, sourceId, amount) {
         const target = players[targetId];
@@ -160,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateDamageList(targetId);
     }
-
+    
     // Atualiza lista de danos
     function updateDamageList(playerIndex) {
         const player = players[playerIndex];
@@ -174,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
     }
-
+    
     // Atualiza seletores de fonte de dano
     function updateDamageSources() {
         const selects = document.querySelectorAll('#damageSource, .damage-source');
@@ -185,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .join('');
         });
     }
-
+    
     // Sorteia jogador inicial
     function chooseFirstPlayer() {
         if (players.length === 0) return;
@@ -199,8 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         // Adiciona destaque ao vencedor
-        const winnerEl = playersContainer.children[randomIndex];
-        winnerEl.classList.add('highlight');
+        playersContainer.children[randomIndex].classList.add('highlight');
         
         alert(`${winner.name} começa!`);
     }
@@ -224,6 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Inicia o jogo
+    // Inicia o jogo com 4 jogadores por padrão
     initGame();
 });
