@@ -26,7 +26,6 @@ body {
     height: 100vh;
 }
 
-/* Controles */
 .controls {
     position: absolute;
     bottom: 20px;
@@ -34,7 +33,11 @@ body {
     transform: translateX(-50%);
     display: flex;
     gap: 10px;
-    z-index: 10;
+    z-index: 100;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
 }
 
 .controls input, .controls button {
@@ -54,18 +57,16 @@ body {
     color: white;
 }
 
-/* Container de jogadores */
 .players-container {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-/* Estilo dos jogadores */
 .player {
     position: absolute;
-    width: 120px;
-    height: 160px;
+    width: 110px;
+    height: 150px;
     background: var(--secondary);
     border-radius: 10px;
     display: flex;
@@ -80,29 +81,32 @@ body {
 
 .player.highlight {
     animation: pulse 1.5s infinite;
+    border-color: gold;
 }
 
-/* Posicionamento circular (4 jogadores) */
-.player[data-position="0"] { top: 10%; left: 50%; transform: translateX(-50%); }
-.player[data-position="1"] { top: 50%; right: 5%; transform: translateY(-50%); }
-.player[data-position="2"] { bottom: 10%; left: 50%; transform: translateX(-50%); }
-.player[data-position="3"] { top: 50%; left: 5%; transform: translateY(-50%); }
-
-/* Elementos dos jogadores */
 .player-name {
-    font-size: 1rem;
+    font-size: 0.9rem;
     margin-bottom: 5px;
     cursor: pointer;
     text-align: center;
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 2px;
+    border-radius: 3px;
+}
+
+.player-name:focus {
+    outline: none;
+    background: #333;
 }
 
 .life-total {
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin: 5px 0;
     color: var(--accent);
+    font-weight: bold;
 }
 
 .life-controls {
@@ -118,6 +122,7 @@ body {
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
+    font-size: 0.8rem;
 }
 
 .life-btn.plus {
@@ -137,9 +142,24 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 0.8rem;
 }
 
-/* Popup de dano */
+.damage-list {
+    margin-top: 5px;
+    width: 100%;
+    max-height: 60px;
+    overflow-y: auto;
+    font-size: 0.7rem;
+}
+
+.damage-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+    border-bottom: 1px solid #333;
+}
+
 .damage-popup {
     position: fixed;
     top: 0;
@@ -150,7 +170,7 @@ body {
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 100;
+    z-index: 200;
 }
 
 .popup-content {
@@ -184,20 +204,36 @@ body {
     cursor: pointer;
 }
 
-/* Animações */
 @keyframes pulse {
-    0% { box-shadow: 0 0 5px gold; transform: scale(1); }
-    50% { box-shadow: 0 0 20px gold; transform: scale(1.05); }
-    100% { box-shadow: 0 0 5px gold; transform: scale(1); }
+    0% { transform: scale(1); box-shadow: 0 0 5px gold; }
+    50% { transform: scale(1.05); box-shadow: 0 0 20px gold; }
+    100% { transform: scale(1); box-shadow: 0 0 5px gold; }
 }
 
-/* Responsividade */
+/* Posicionamento para diferentes quantidades de jogadores */
+.player[data-position="0"] { top: 5%; left: 50%; transform: translateX(-50%); }
+.player[data-position="1"] { top: 15%; right: 5%; }
+.player[data-position="2"] { bottom: 15%; right: 5%; }
+.player[data-position="3"] { bottom: 5%; left: 50%; transform: translateX(-50%); }
+.player[data-position="4"] { bottom: 15%; left: 5%; }
+.player[data-position="5"] { top: 15%; left: 5%; }
+.player[data-position="6"] { top: 30%; right: 15%; }
+.player[data-position="7"] { bottom: 30%; right: 15%; }
+.player[data-position="8"] { bottom: 30%; left: 15%; }
+.player[data-position="9"] { top: 30%; left: 15%; }
+.player[data-position="10"] { top: 50%; right: 2%; transform: translateY(-50%); }
+.player[data-position="11"] { top: 50%; left: 2%; transform: translateY(-50%); }
+
+/* Ajuste para 2 jogadores */
+.player[data-position="0"][data-total="2"] { top: 30%; }
+.player[data-position="1"][data-total="2"] { top: 60%; }
+
 @media (max-width: 600px) {
     .player {
         width: 100px;
         height: 140px;
     }
     .life-total {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 }

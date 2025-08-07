@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const colors = [
         '#FF5252', '#2196F3', '#4CAF50', '#FFC107',
-        '#9C27B0', '#607D8B'
+        '#9C27B0', '#607D8B', '#E91E63', '#00BCD4',
+        '#8BC34A', '#FF9800', '#795548', '#9E9E9E'
     ];
 
     let players = [];
@@ -19,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializa o jogo
     function initGame() {
         const playerCount = parseInt(playerCountInput.value);
-        if (playerCount < 2 || playerCount > 6) {
-            alert("Número de jogadores deve ser entre 2 e 6");
+        if (playerCount < 2 || playerCount > 12) {
+            alert("Número de jogadores deve ser entre 2 e 12");
             return;
         }
         
@@ -59,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="life-btn minus" data-amount="1">-1</button>
                 <button class="life-btn minus" data-amount="5">-5</button>
             </div>
-            <button class="commander-btn">Dano de Comandante</button>
+            <button class="commander-btn">Dano</button>
+            <div class="damage-list"></div>
         `;
         
         playersContainer.appendChild(playerEl);
@@ -68,6 +70,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const nameEl = playerEl.querySelector('.player-name');
         nameEl.addEventListener('blur', () => {
             player.name = nameEl.textContent;
+            updateDamageSources();
+        });
+        
+        nameEl.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                nameEl.blur();
+            }
         });
         
         // Controles de vida
@@ -86,26 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Posiciona os jogadores circularmente
+    // Posiciona os jogadores
     function positionPlayers() {
         const playerElements = document.querySelectorAll('.player');
         const totalPlayers = playerElements.length;
         
         playerElements.forEach((playerEl, index) => {
             playerEl.setAttribute('data-total', totalPlayers);
-            
-            // Ajuste especial para 2 jogadores
-            if (totalPlayers === 2) {
-                if (index === 0) {
-                    playerEl.style.top = '20%';
-                    playerEl.style.left = '50%';
-                    playerEl.style.transform = 'translateX(-50%)';
-                } else {
-                    playerEl.style.top = '60%';
-                    playerEl.style.left = '50%';
-                    playerEl.style.transform = 'translateX(-50%)';
-                }
-            }
         });
     }
 
@@ -118,9 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const lifeEl = playerEl.querySelector('.life-total');
         
         lifeEl.textContent = player.life;
+        lifeEl.style.transform = 'scale(1.2)';
         lifeEl.style.color = change > 0 ? 'var(--life-plus)' : 'var(--life-minus)';
         
         setTimeout(() => {
+            lifeEl.style.transform = 'scale(1)';
             lifeEl.style.color = 'var(--accent)';
         }, 300);
     }
@@ -168,14 +167,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const playerEl = playersContainer.children[playerIndex];
         const damageList = playerEl.querySelector('.damage-list');
         
-        if (!damageList) return;
-        
         damageList.innerHTML = player.commanderDamage.map(damage => `
             <div class="damage-item">
                 <span>${damage.sourceName}</span>
                 <span>${damage.amount}</span>
             </div>
         `).join('');
+    }
+
+    // Atualiza seletores de fonte de dano
+    function updateDamageSources() {
+        const selects = document.querySelectorAll('#damageSource, .damage-source');
+        selects.forEach(select => {
+            select.innerHTML = players
+                .filter(p => p.id !== currentPlayerId)
+                .map(p => `<option value="${p.id}">${p.name}</option>`)
+                .join('');
+        });
     }
 
     // Sorteia jogador inicial
@@ -191,7 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         // Adiciona destaque ao vencedor
-        playersContainer.children[randomIndex].classList.add('highlight');
+        const winnerEl = playersContainer.children[randomIndex];
+        winnerEl.classList.add('highlight');
         
         alert(`${winner.name} começa!`);
     }
@@ -215,6 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Inicia com 4 jogadores
+    // Inicia o jogo
     initGame();
 });

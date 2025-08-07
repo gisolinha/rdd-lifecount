@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magic Commander - Circular</title>
+    <title>Magic Commander - 12 Jogadores</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app">
         <!-- Controles -->
         <div class="controls">
-            <input type="number" id="playerCount" min="2" max="6" value="4">
+            <input type="number" id="playerCount" min="2" max="12" value="4">
             <button id="generateBtn">Gerar Jogadores</button>
             <button id="firstPlayerBtn">🎲 Sortear Iniciante</button>
         </div>
 
-        <!-- Jogadores em posição circular -->
+        <!-- Container de jogadores -->
         <div id="playersContainer" class="players-container"></div>
 
         <!-- Popup de dano -->
@@ -24,7 +24,7 @@
                 <h3>Adicionar Dano</h3>
                 <select id="damageSource"></select>
                 <input type="number" id="damageAmount" min="1" value="1">
-                <button id="confirmDamage">✔ Adicionar</button>
+                <button id="confirmDamage">Adicionar</button>
             </div>
         </div>
     </div>
